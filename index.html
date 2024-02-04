@@ -40,7 +40,17 @@
 <h2>Supplier Agreement</h2>
 <body>
     <div id="dynamicFieldsContainer"></div>
+    <div id="dynamicForm">
+    <!-- Existing form fields here -->
 
+    <!-- Dummy Buttons -->
+    <div style="margin-bottom: 16px;">
+        <button type="button" onclick="handlePrevious()">Previous</button>
+        <button type="button" onclick="handleNext()">Next</button>
+        <button type="button" onclick="handleSave()">Save</button>
+        <button type="button" onclick="handleDiscard()">Discard</button>
+    </div>
+</div>
     <script>
         // Load the Google Sheets API
         gapi.load('client', initClient);
@@ -145,6 +155,21 @@ function mapFieldType(field) {
             return null; // Return null for unrecognized types
     }
 }
+    function handlePrevious() {
+        alert('Previous button clicked!');
+    }
+
+    function handleNext() {
+        alert('Next button clicked!');
+    }
+
+    function handleSave() {
+        alert('Save button clicked!');
+    }
+
+    function handleDiscard() {
+        alert('Discard button clicked!');
+    }
 </script>
 
 <script async defer src="https://apis.google.com/js/api.js"></script>
