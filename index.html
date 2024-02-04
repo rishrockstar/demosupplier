@@ -6,15 +6,50 @@
     <title>Dynamic Fields from Google Sheets</title>
     <style>
         body {
-          background-color: lightgrey;
+            background-color: lightgrey;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
-        div { margin: 70px; border: 1px solid #4CAF50; }
+
+        h2 {
+            color: #333;
+        }
+
+        h4 {
+            color: #555;
+        }
+
+        #dynamicFieldsContainer {
+            margin: 20px;
+        }
+
+        #dynamicForm {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+        }
     </style>
-    <script src="https://apis.google.com/js/api.js"></script>
 </head>
-<h2>Create Agreement</h2>
-<h4>Supplier Agreement</h4>
 <body>
+    <div id="dynamicFieldsContainer"></div>
+
     <script>
         // Load the Google Sheets API
         gapi.load('client', initClient);
