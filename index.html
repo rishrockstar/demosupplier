@@ -49,26 +49,66 @@
   function createDynamicForm(labels, fields) {
     const formContainer = document.createElement('div');
     formContainer.id = 'dynamicForm';
-
     labels.forEach((label, index) => {
-      const formField = document.createElement('div');
+        const formField = document.createElement('div');
 
-      const labelElement = document.createElement('label');
-      labelElement.textContent = label;
+        const labelElement = document.createElement('label');
+        labelElement.textContent = label;
 
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.name = label; // You may want to adjust this based on your specific needs
-      input.value = fields[index];
+        const input = document.createElement('input');
+        input.name = label; // You may want to adjust this based on your specific needs
 
-      formField.appendChild(labelElement);
-      formField.appendChild(input);
+        // Map input types based on the values in the 'fields' array
+        const fieldType = mapFieldType(fields[index]);
+        if (fieldType) {
+            input.type = fieldType;
+        } else {
+            // Handle the case where the input type is not recognized
+            console.error('Unrecognized input type for field:', label);
+            return;
+        }
 
-      formContainer.appendChild(formField);
+        // You can set additional attributes or validations based on the fieldType if needed
+
+        formField.appendChild(labelElement);
+        formField.appendChild(input);
+
+        formContainer.appendChild(formField);
     });
 
-    document.body.appendChild(formContainer);
-  }
+    document.getElementById('dynamicFieldsContainer').appendChild(formContainer);
+}
+
+// Function to map input types based on the values in the 'fields' array
+function mapFieldType(field) {
+    switch (field) {
+        case 'Auto':
+        case 'Label':
+        case 'Email':
+        case 'RichTextArea':
+        case 'String':
+            return 'text';
+        case 'Boolean':
+            return 'checkbox';
+        case 'Choice':
+        case 'MultiSelectChoice':
+            return 'select';
+        case 'Currency':
+        case 'Number':
+        case 'Percentage':
+            return 'number';
+        case 'Date':
+            return 'date';
+        case 'DateTime':
+            return 'datetime-local';
+        case 'FileSelection':
+            return 'file';
+        case 'TextArea':
+            return 'textarea';
+        default:
+            return null; // Return null for unrecognized types
+    }
+}
 </script>
 
 <script async defer src="https://apis.google.com/js/api.js"></script>
