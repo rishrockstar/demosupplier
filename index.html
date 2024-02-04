@@ -29,7 +29,7 @@
         // Function to fetch data from Google Sheets
         function fetchDataFromGoogleSheets() {
             const spreadsheetId = '11sHPQgVOiS32WQpBcQG0q1kLI9LLFBs6pmeIsopAvj0'; // Replace with your Google Sheets ID
-            const range = 'Sheet1!A:Z'; // Replace with your desired range
+            const range = 'ContractTypeAttributes!A1:Z'; // Replace with your desired range
 
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: spreadsheetId,
