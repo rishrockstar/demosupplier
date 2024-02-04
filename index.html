@@ -20,58 +20,58 @@
             gapi.client.init({
                 apiKey: 'AIzaSyBo4KSquNH5NOdkUUfiIaJe123DkpfP_W8', // Replace with your API key
                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-            }).then(() => {
-                // Fetch data from Google Sheets
-                fetchDataFromGoogleSheets();
-            });
-        }
+    }).then(() => {
+      handleSheetData();
+    });
+  }
 
-        // Function to fetch data from Google Sheets
-        function fetchDataFromGoogleSheets() {
-            const spreadsheetId = '11sHPQgVOiS32WQpBcQG0q1kLI9LLFBs6pmeIsopAvj0'; // Replace with your Google Sheets ID
-            const range = 'ContractTypeAttributes!A1:Z'; // Replace with your desired range
+  function handleSheetData() {
+    const spreadsheetId = '11sHPQgVOiS32WQpBcQG0q1kLI9LLFBs6pmeIsopAvj0';
+    const range = 'ContractTypeAttributes';
 
-            gapi.client.sheets.spreadsheets.values.get({
-                spreadsheetId: spreadsheetId,
-                range: range,
-            }).then(response => {
-                console.log('Data fetched successfully:', response.result);
-                displayDynamicFields(response.result.values);
-            }).catch(error => {
-                console.error('Error fetching data:', error);
-            });
-        }
+    gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range,
+    }).then(response => {
+      const data = response.result.values;
 
-        // Function to display dynamic fields
-        function displayDynamicFields(excelData) {
-            const container = document.getElementById("dynamicFieldsContainer");
+      if (data) {
+        const labels = data.map(entry => entry[2]); // Assuming ICMDisplayName is in the first column
+        const fields = data.map(entry => entry[4]); // Assuming DataType is in the second column
 
-            if (!container) {
-                console.error('Container element not found.');
-                return;
-            }
+        createDynamicForm(labels, fields);
+      } else {
+        console.error('No data found in the sheet');
+      }
+    });
+  }
 
-            // Assuming the first row contains column names
-            const headerRow = excelData[0];
+  function createDynamicForm(labels, fields) {
+    const formContainer = document.createElement('div');
+    formContainer.id = 'dynamicForm';
 
-            // Iterate through the attributes and create dynamic fields
-            headerRow.forEach(attribute => {
-                const columnIndex = headerRow.indexOf(attribute);
-                const values = excelData.map(row => row[columnIndex]);
+    labels.forEach((label, index) => {
+      const formField = document.createElement('div');
 
-                // Check if any non-blank values exist for the attribute
-                if (values.some(value => value !== '' && value !== undefined && value !== null)) {
-                    const label = document.createElement("label");
-                    label.textContent = attribute;
+      const labelElement = document.createElement('label');
+      labelElement.textContent = label;
 
-                    const input = document.createElement("input");
-                    input.type = "text"; // You can customize this based on your needs
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = label; // You may want to adjust this based on your specific needs
+      input.value = fields[index];
 
-                    container.appendChild(label);
-                    container.appendChild(input);
-                }
-            });
-        }
-    </script>
+      formField.appendChild(labelElement);
+      formField.appendChild(input);
+
+      formContainer.appendChild(formField);
+    });
+
+    document.body.appendChild(formContainer);
+  }
+</script>
+
+<script async defer src="https://apis.google.com/js/api.js"></script>
+
 </body>
 </html>
