@@ -15,58 +15,61 @@
 
         // Function to initialize the Google Sheets API client
         function initClient() {
-			// your-script.js
+            gapi.client.init({
+                apiKey: 'AIzaSyBo4KSquNH5NOdkUUfiIaJe123DkpfP_W8', // Replace with your API key
+                discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+            }).then(() => {
+                // Fetch data from Google Sheets
+                fetchDataFromGoogleSheets();
+            });
+        }
 
-// Load the Google Sheets API
-gapi.load('client', initClient);
+        // Function to fetch data from Google Sheets
+        function fetchDataFromGoogleSheets() {
+            const spreadsheetId = '11sHPQgVOiS32WQpBcQG0q1kLI9LLFBs6pmeIsopAvj0'; // Replace with your Google Sheets ID
+            const range = 'Sheet1!A:Z'; // Replace with your desired range
 
-// Function to initialize the Google Sheets API client
-function initClient() {
-    gapi.client.init({
-        apiKey: 'AIzaSyBo4KSquNH5NOdkUUfiIaJe123DkpfP_W8', // Replace with your API key
-        discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-    }).then(() => {
-        // Fetch data from Google Sheets
-        fetchDataFromGoogleSheets();
-    });
-}
+            gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: spreadsheetId,
+                range: range,
+            }).then(response => {
+                console.log('Data fetched successfully:', response.result);
+                displayDynamicFields(response.result.values);
+            }).catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
 
-// Function to fetch data from Google Sheets
-function fetchDataFromGoogleSheets() {
-    const spreadsheetId = '11sHPQgVOiS32WQpBcQG0q1kLI9LLFBs6pmeIsopAvj0'; // Replace with your Google Sheets ID
-    const range = 'Sheet1!A:Z'; // Replace with your desired range
+        // Function to display dynamic fields
+        function displayDynamicFields(excelData) {
+            const container = document.getElementById("dynamicFieldsContainer");
 
-    gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: spreadsheetId,
-        range: range,
-    }).then(response => {
-        const excelData = response.result.values;
-
-        // Assuming the first row contains column names
-        const headerRow = excelData[0];
-
-        // Get the container element
-        const container = document.getElementById("dynamicFieldsContainer");
-
-        // Iterate through the attributes and create dynamic fields
-        headerRow.forEach(attribute => {
-            const columnIndex = headerRow.indexOf(attribute);
-            const values = excelData.map(row => row[columnIndex]);
-
-            // Check if any non-blank values exist for the attribute
-            if (values.some(value => value !== '' && value !== undefined && value !== null)) {
-                const label = document.createElement("label");
-                label.textContent = attribute;
-
-                const input = document.createElement("input");
-                input.type = "text"; // You can customize this based on your needs
-
-                container.appendChild(label);
-                container.appendChild(input);
+            if (!container) {
+                console.error('Container element not found.');
+                return;
             }
-        });
-    });
-}
-</script>
+
+            // Assuming the first row contains column names
+            const headerRow = excelData[0];
+
+            // Iterate through the attributes and create dynamic fields
+            headerRow.forEach(attribute => {
+                const columnIndex = headerRow.indexOf(attribute);
+                const values = excelData.map(row => row[columnIndex]);
+
+                // Check if any non-blank values exist for the attribute
+                if (values.some(value => value !== '' && value !== undefined && value !== null)) {
+                    const label = document.createElement("label");
+                    label.textContent = attribute;
+
+                    const input = document.createElement("input");
+                    input.type = "text"; // You can customize this based on your needs
+
+                    container.appendChild(label);
+                    container.appendChild(input);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
